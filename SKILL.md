@@ -89,6 +89,8 @@ ls index.html app.py Dockerfile README.md 2>/dev/null
 }
 ```
 
+**重要：Docker 类型必须使用 7860 作为外部端口，这是魔搭创空间的规定。**
+
 **资源配置选项：**
 - `platform/2v-cpu-16g-mem` - 免费，所有用户可用
 - `xgpu/8v-cpu-32g-mem-16g` - GPU，需要申请
@@ -141,24 +143,36 @@ CMD ["python", "app.py"]
 | `{description}` | 创空间描述 | 根据应用功能生成简短描述 |
 | `{project_path}` | 本地项目路径 | `pwd` 获取完整路径 |
 
-**输出模板：**
+**输出模板（直接在 CLI 输出，不要写入文件）：**
 
 ```
-部署到魔搭创空间：
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+🚀 部署到魔搭创空间
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
-1. 访问 https://modelscope.cn/studios/create?template=quick
+1️⃣ 访问部署页面：
+   https://modelscope.cn/studios/create?template=quick
 
-2. 填写基本信息：
-   - 英文名称：{english_name}
-   - 中文名称：{chinese_name}
-   - 可见性：公开/私有
-   - 描述：{description}
+2️⃣ 填写基本信息：
+   • 英文名称：{english_name}
+   • 中文名称：{chinese_name}
+   • 可见性：公开 / 私有
+   • 描述：{description}
 
-3. 上传项目文件夹：选择 {project_path} 整个文件夹
+3️⃣ 上传项目文件：
+   • 选择整个项目文件夹上传
+   • 项目路径：{project_path}
 
-4. 点击 "确认创建并部署"
+4️⃣ 点击 "确认创建并部署"
+
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+💡 提示：部署完成后，如需使用 Git 维护项目，可运行：
+   git init && git add . && git commit -m "Initial commit"
+   然后在魔搭创空间的 Git 仓库页面获取远程地址并连接。
 ```
 
+**重要：所有部署方式都使用同一个页面：https://modelscope.cn/studios/create?template=quick**
 
 ## 变量生成示例
 
@@ -174,3 +188,5 @@ CMD ["python", "app.py"]
 2. **用合理默认值** - 减少用户输入，使用免费资源配置
 3. **智能检测** - 根据现有文件推断项目类型
 4. **缺失文件提醒** - 特别注意 Dockerfile 需要询问确认
+5. **Docker 端口** - Docker 类型必须使用 7860 端口
+6. **CLI 输出** - 部署指南直接在 CLI 输出，不要写入文件
