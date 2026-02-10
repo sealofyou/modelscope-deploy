@@ -1,0 +1,12 @@
+# Claude temporary files
+tmpclaude-*
+*.tmp
+
+# macOS
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
