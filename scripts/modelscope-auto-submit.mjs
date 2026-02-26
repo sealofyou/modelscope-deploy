@@ -373,6 +373,30 @@ async function findFirstLocator(page, selectors) {
   return null;
 }
 
+async function findProjectUploadInput(page) {
+  const allInputs = page.locator('input[type="file"]');
+  const count = await allInputs.count();
+
+  for (let i = 0; i < count; i += 1) {
+    const locator = allInputs.nth(i);
+    const meta = await locator.evaluate((el) => ({
+      name: (el.getAttribute("name") || "").toLowerCase(),
+      accept: (el.getAttribute("accept") || "").toLowerCase(),
+      webkitdirectory: el.hasAttribute("webkitdirectory"),
+      multiple: el.hasAttribute("multiple"),
+    }));
+
+    const looksLikeCoverInput =
+      meta.name.includes("smimg") || meta.accept.includes(".jpg") || meta.accept.includes(".png");
+
+    if (!looksLikeCoverInput || meta.webkitdirectory || meta.multiple) {
+      return locator;
+    }
+  }
+
+  return null;
+}
+
 async function collectPageSignals(page) {
   const data = await page.evaluate(() => {
     const hasAny = (selectors) =>
@@ -964,10 +988,7 @@ async function run(options) {
       }
     }
 
-    const uploadInput = await findFirstLocator(page, [
-      'input[type="file"][webkitdirectory]',
-      'input[type="file"]',
-    ]);
+    const uploadInput = await findProjectUploadInput(page);
     if (!uploadInput) {
       throw new Error("Cannot find upload input");
     }
