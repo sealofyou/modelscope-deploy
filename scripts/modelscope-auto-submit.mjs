@@ -440,6 +440,37 @@ async function saveDebugArtifacts(page, options, stage) {
   }
 }
 
+async function dismissBlockingOverlays(page) {
+  const selectors = [
+    'button:has-text("知道了")',
+    'button:has-text("我知道了")',
+    'button:has-text("关闭")',
+    '[class*="tour"] button:has-text("知道了")',
+    '[class*="tour"] [class*="close"]',
+    '[aria-label="Close"]',
+  ];
+
+  for (const selector of selectors) {
+    try {
+      const locator = page.locator(selector).first();
+      if ((await locator.count()) > 0) {
+        await locator.click({ timeout: 1000, force: true });
+        await page.waitForTimeout(150);
+      }
+    } catch {
+      // Ignore and continue trying other dismiss targets.
+    }
+  }
+
+  try {
+    await page.keyboard.press("Escape");
+    await page.waitForTimeout(100);
+    await page.keyboard.press("Escape");
+  } catch {
+    // Ignore.
+  }
+}
+
 async function waitForCreateFormReady(page, options) {
   const deadline = Date.now() + options.timeoutMs;
   let lastState = "unknown";
@@ -484,7 +515,17 @@ async function fillBySelectors(page, selectors, value, fieldName) {
   if (!locator) {
     throw new Error(`Cannot find field: ${fieldName}, url=${page.url()}`);
   }
-  await locator.click({ timeout: 5000 });
+  try {
+    await locator.click({ timeout: 5000 });
+  } catch (error) {
+    const message = error instanceof Error ? error.message : String(error);
+    if (message.includes("intercepts pointer events")) {
+      await dismissBlockingOverlays(page);
+      await locator.click({ timeout: 5000 });
+    } else {
+      throw error;
+    }
+  }
   await locator.fill(value);
 }
 
@@ -864,6 +905,7 @@ async function run(options) {
 
     await page.goto(options.createUrl, { waitUntil: "domcontentloaded" });
     await waitForCreateFormReady(page, options);
+    await dismissBlockingOverlays(page);
     if (options.interactive) {
       await promptEnter(
         "Please confirm you are logged in to ModelScope and the create form is visible.",
