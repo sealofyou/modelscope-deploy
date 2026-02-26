@@ -31,6 +31,20 @@ node scripts/modelscope-auto-submit.mjs --help
 npx playwright install chromium
 ```
 
+## 1.1 先打开登录页（推荐）
+
+如果你希望先手动登录，再让自动化继续，先执行：
+
+```bash
+node scripts/open-modelscope-login.mjs --browser-channel chrome
+```
+
+它会打开：
+- URL: `https://modelscope.cn/studios/create?template=quick`
+- 并使用专用 profile: `output/playwright/modelscope-profile`
+
+后续跑自动化时，保持相同 `--browser-channel` 与 `--user-data-dir`，就会复用这次登录态。
+
 ## 2. 基础用法（只填表+上传，不提交）
 
 在仓库根目录执行：

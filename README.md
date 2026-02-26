@@ -102,6 +102,7 @@ git push origin master    # fast-forward，不需要 force
 仓库已提供自动提交流程脚本：
 
 - 脚本：`scripts/modelscope-auto-submit.mjs`
+- 登录助手：`scripts/open-modelscope-login.mjs`
 - 说明：`references/playwright-auto-submit.md`
 
 这个脚本支持自动填写 ModelScope 创建空间表单、上传目录，并可选点击最终提交按钮（`--auto-submit`）。

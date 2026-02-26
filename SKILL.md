@@ -224,6 +224,7 @@ node scripts/modelscope-auto-submit.mjs \
 ### Playwright 自动提交（可选）
 若用户明确要求自动化网页提交流程，可使用仓库脚本：
 - `scripts/modelscope-auto-submit.mjs`
+- `scripts/open-modelscope-login.mjs`（先打开登录页并复用同一 profile）
 - 详细参数说明：`references/playwright-auto-submit.md`
 
 执行前要求：
