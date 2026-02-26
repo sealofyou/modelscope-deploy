@@ -114,6 +114,11 @@ test("analyzeDeployLog detects known issues from deployment logs", () => {
   assert.equal(analysis.issues.some((x) => x.id === "docker-entrypoint-not-found"), true);
 });
 
+test("analyzeDeployLog treats running status as success signal", () => {
+  const analysis = analyzeDeployLog("应用部署\n运行中\n查看日志");
+  assert.equal(analysis.successDetected, true);
+});
+
 test("applyKnownAutoFixes patches Dockerfile for docker-entrypoint issue", async () => {
   const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "ms-deploy-"));
   const dockerfilePath = path.join(tmpDir, "Dockerfile");
