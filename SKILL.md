@@ -132,7 +132,7 @@ EXPOSE 7860
 CMD ["python", "app.py"]
 ```
 
-### 步骤 4：输出部署指南
+### 步骤 4：输出部署指南（默认手动）
 
 根据应用内容生成以下变量：
 
@@ -174,6 +174,33 @@ CMD ["python", "app.py"]
 
 **重要：所有部署方式都使用同一个页面：https://modelscope.cn/studios/create?template=quick**
 
+### 步骤 5：用户要求自动提交时，执行脚本自动化
+
+当用户明确要求“自动填表并提交”时，优先使用仓库脚本：
+
+```bash
+node scripts/modelscope-auto-submit.mjs \
+  --project-path <project_path> \
+  --english-name <english_name> \
+  --chinese-name <chinese_name> \
+  --description "<description>" \
+  --browser-channel chrome \
+  --visibility private \
+  --auto-submit \
+  --monitor-deploy \
+  --auto-fix \
+  --run-timeout-ms 1200000
+```
+
+行为说明：
+- `--auto-submit`：自动点击“确认创建并部署”
+- `--monitor-deploy`：提交后持续抓取部署日志
+- `--auto-fix`：命中已知错误时，自动在本地项目中应用修复（例如 Docker entrypoint/registry 问题）
+- `--browser-channel`：默认 `chrome`（优先复用本机浏览器，避免下载卡住）
+- `--run-timeout-ms`：限制脚本总时长，避免长时间死等
+
+如果自动修复已应用，提醒用户重新运行脚本发起新一轮部署。
+
 ## 变量生成示例
 
 | 项目 | english_name | chinese_name | description |
@@ -184,9 +211,30 @@ CMD ["python", "app.py"]
 
 ## 注意事项
 
-1. **不自动上传** - 只配置文件，让用户手动上传
+1. **默认手动，按需自动化** - 默认给手动步骤；用户明确要求时执行自动提交脚本
 2. **用合理默认值** - 减少用户输入，使用免费资源配置
 3. **智能检测** - 根据现有文件推断项目类型
 4. **缺失文件提醒** - 特别注意 Dockerfile 需要询问确认
 5. **Docker 端口** - Docker 类型必须使用 7860 端口
 6. **CLI 输出** - 部署指南直接在 CLI 输出，不要写入文件
+### 部署遇到问题时先看这里
+发生报错或页面异常时，先查阅：
+`references/post-deploy-troubleshooting-and-pr.md`
+
+### Playwright 自动提交（可选）
+若用户明确要求自动化网页提交流程，可使用仓库脚本：
+- `scripts/modelscope-auto-submit.mjs`
+- 详细参数说明：`references/playwright-auto-submit.md`
+
+执行前要求：
+1. 本机可用 `node` 与 `npx`
+2. 已安装 `playwright`（建议 `npm install --save-dev playwright`）
+
+### Google Chrome DevTools MCP 自动化（可选）
+若用户要求走 Google 官方 MCP，可参考：
+- `references/chrome-devtools-mcp-auto-submit.md`
+
+推荐配置（Codex/Claude 等）：
+- server: `chrome-devtools`
+- command: `npx`
+- args: `["-y", "chrome-devtools-mcp@latest"]`

@@ -8,6 +8,8 @@
 - 支持 Static、Gradio、Streamlit、Docker 等多种部署类型
 - 提供部署问题排查指南
 - 支持 Git push 和文件上传两种部署方式
+- 支持 Playwright 自动填表、自动提交、部署日志监控与已知错误自动修复
+- 支持接入 Google 官方 Chrome DevTools MCP 执行浏览器自动化
 
 ## 安装方法
 
@@ -94,6 +96,42 @@ git push origin master    # fast-forward，不需要 force
 ```
 
 更多问题排查方法请参考 [references/git-troubleshooting.md](./references/git-troubleshooting.md)。
+
+## Playwright 自动提交（可选）
+
+仓库已提供自动提交流程脚本：
+
+- 脚本：`scripts/modelscope-auto-submit.mjs`
+- 说明：`references/playwright-auto-submit.md`
+
+这个脚本支持自动填写 ModelScope 创建空间表单、上传目录，并可选点击最终提交按钮（`--auto-submit`）。
+
+新增能力：
+- `--monitor-deploy`：提交后自动抓取部署日志
+- `--auto-fix`：命中已知问题后自动修复本地文件（例如 Docker entrypoint、corepack registry）
+- `--browser-channel`：默认 `chrome`，优先复用本机浏览器，避免下载 Playwright Chromium 卡住
+- `--run-timeout-ms` / `--prompt-timeout-ms`：限制脚本总时长与交互等待时长，避免无上限阻塞
+
+示例：
+
+```bash
+node scripts/modelscope-auto-submit.mjs \
+  --project-path ../mind-ai \
+  --english-name mind-ai \
+  --chinese-name "小当家" \
+  --description "AI 小当家示例应用" \
+  --browser-channel chrome \
+  --visibility private \
+  --auto-submit \
+  --monitor-deploy \
+  --auto-fix
+```
+
+## Google Chrome DevTools MCP（可选）
+
+如果你希望使用 Google 官方 MCP 作为浏览器自动化通道，请参考：
+
+- [references/chrome-devtools-mcp-auto-submit.md](./references/chrome-devtools-mcp-auto-submit.md)
 
 ## 许可证
 

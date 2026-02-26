@@ -10,3 +10,7 @@ tmpclaude-*
 .idea/
 *.swp
 *.swo
+
+# Node / Playwright artifacts
+node_modules/
+output/playwright/
