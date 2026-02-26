@@ -137,7 +137,10 @@ async function main() {
 }
 
 const currentFile = fileURLToPath(import.meta.url);
-if (process.argv[1] && path.resolve(process.argv[1]) === currentFile) {
+if (
+  process.argv[1] &&
+  path.resolve(process.argv[1]).toLowerCase() === path.resolve(currentFile).toLowerCase()
+) {
   main().catch((error) => {
     console.error(`[open-modelscope-login] ${error.message}`);
     process.exitCode = 1;
