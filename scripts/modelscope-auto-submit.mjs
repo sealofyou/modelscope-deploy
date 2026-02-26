@@ -63,6 +63,9 @@ const LOGIN_PATH_PATTERN = /(\/login|\/signin|auth\/login)/i;
 const CREATE_PATH_PATTERN = /(\/studios\/create)/i;
 
 const ENGLISH_NAME_SELECTORS = [
+  "input#Name",
+  'input[id="Name"]',
+  'input[id*="name"]',
   'input[placeholder*="英文"]',
   'input[placeholder*="English"]',
   'input[name*="english"]',
@@ -70,6 +73,9 @@ const ENGLISH_NAME_SELECTORS = [
 ];
 
 const CHINESE_NAME_SELECTORS = [
+  "input#ChineseName",
+  'input[id="ChineseName"]',
+  'input[id*="Chinese"]',
   'input[placeholder*="中文"]',
   'input[placeholder*="Chinese"]',
   'input[name*="chinese"]',
@@ -77,6 +83,9 @@ const CHINESE_NAME_SELECTORS = [
 ];
 
 const DESCRIPTION_SELECTORS = [
+  "textarea#Description",
+  'textarea[id="Description"]',
+  'textarea[id*="description"]',
   'textarea[placeholder*="描述"]',
   'textarea[placeholder*="description"]',
   'textarea[name*="description"]',
@@ -369,18 +378,27 @@ async function collectPageSignals(page) {
     const hasAny = (selectors) =>
       selectors.some((selector) => document.querySelector(selector) !== null);
     const englishSelectors = [
+      "input#Name",
+      'input[id="Name"]',
+      'input[id*="name"]',
       'input[placeholder*="英文"]',
       'input[placeholder*="English"]',
       'input[name*="english"]',
       'input[id*="english"]',
     ];
     const chineseSelectors = [
+      "input#ChineseName",
+      'input[id="ChineseName"]',
+      'input[id*="Chinese"]',
       'input[placeholder*="中文"]',
       'input[placeholder*="Chinese"]',
       'input[name*="chinese"]',
       'input[id*="chinese"]',
     ];
     const descriptionSelectors = [
+      "textarea#Description",
+      'textarea[id="Description"]',
+      'textarea[id*="description"]',
       'textarea[placeholder*="描述"]',
       'textarea[placeholder*="description"]',
       'textarea[name*="description"]',
