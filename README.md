@@ -9,6 +9,7 @@
 - 提供部署问题排查指南
 - 支持 Git push 和文件上传两种部署方式
 - 支持 Playwright 自动填表、自动提交、部署日志监控与已知错误自动修复
+- 支持部署后健康检查：自动提取最新日志 + 前端上传冒烟验证
 - 支持接入 Google 官方 Chrome DevTools MCP 执行浏览器自动化
 
 ## 安装方法
@@ -127,6 +128,40 @@ node scripts/modelscope-auto-submit.mjs \
   --monitor-deploy \
   --auto-fix
 ```
+
+## 部署后健康检查（推荐）
+
+仓库提供一键健康检查脚本：
+
+- 脚本：`scripts/modelscope-studio-healthcheck.mjs`
+- 作用：提取“查看日志”中的最新 N 条日志；可选执行前端图片 + bbox 上传冒烟
+
+只看最新日志（默认 10 条）：
+
+```bash
+node scripts/modelscope-studio-healthcheck.mjs \
+  --studio-url "https://modelscope.cn/studios/<user>/<studio>"
+```
+
+日志 + 前端冒烟一起测：
+
+```bash
+node scripts/modelscope-studio-healthcheck.mjs \
+  --studio-url "https://modelscope.cn/studios/<user>/<studio>" \
+  --check-frontend \
+  --browser-channel chrome \
+  --latest-log-count 10 \
+  --output-json output/healthcheck/result.json
+```
+
+前端冒烟默认断言：
+- 图像输入可上传
+- bbox JSON 可解析（默认 `[{\"label\":\"cat\",\"bbox\":[0,0,1,1]}]`）
+- 图例出现 `cat`
+- `mainCanvas` 可见
+- 无错误提示
+
+更多说明见：[references/post-deploy-validation.md](./references/post-deploy-validation.md)
 
 ## Google Chrome DevTools MCP（可选）
 

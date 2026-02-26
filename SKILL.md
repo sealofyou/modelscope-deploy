@@ -201,6 +201,24 @@ node scripts/modelscope-auto-submit.mjs \
 
 如果自动修复已应用，提醒用户重新运行脚本发起新一轮部署。
 
+### 步骤 6：部署后标准验收（日志 + 前端）
+
+部署成功后，默认补做一次健康检查，优先使用仓库脚本：
+
+```bash
+node scripts/modelscope-studio-healthcheck.mjs \
+  --studio-url "https://modelscope.cn/studios/<user>/<studio>" \
+  --check-frontend \
+  --latest-log-count 10 \
+  --browser-channel chrome
+```
+
+验收要求：
+- 输出“最新 10 条日志”
+- 前端图片上传可用
+- bbox JSON 可解析并渲染到画布
+- 无错误提示
+
 ## 变量生成示例
 
 | 项目 | english_name | chinese_name | description |
@@ -225,7 +243,9 @@ node scripts/modelscope-auto-submit.mjs \
 若用户明确要求自动化网页提交流程，可使用仓库脚本：
 - `scripts/modelscope-auto-submit.mjs`
 - `scripts/open-modelscope-login.mjs`（先打开登录页并复用同一 profile）
+- `scripts/modelscope-studio-healthcheck.mjs`（部署后日志与前端可用性验收）
 - 详细参数说明：`references/playwright-auto-submit.md`
+- 验收说明：`references/post-deploy-validation.md`
 
 执行前要求：
 1. 本机可用 `node` 与 `npx`

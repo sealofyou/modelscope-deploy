@@ -13,4 +13,4 @@ tmpclaude-*
 
 # Node / Playwright artifacts
 node_modules/
-output/playwright/
+output/
