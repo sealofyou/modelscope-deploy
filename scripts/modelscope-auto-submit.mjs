@@ -944,16 +944,24 @@ async function run(options) {
         "public visibility",
       );
     } else {
-      await clickBySelectors(
-        page,
-        [
-          'label:has-text("私有")',
-          'label:has-text("Private")',
-          '[role="radio"]:has-text("私有")',
-          '[role="radio"]:has-text("Private")',
-        ],
-        "private visibility",
-      );
+      try {
+        await clickBySelectors(
+          page,
+          [
+            'label:has-text("私有")',
+            'label:has-text("Private")',
+            'label:has-text("非公开")',
+            '[role="radio"]:has-text("私有")',
+            '[role="radio"]:has-text("Private")',
+            '[role="radio"]:has-text("非公开")',
+          ],
+          "private visibility",
+        );
+      } catch {
+        console.log(
+          "Private visibility selector not found. Continue with current default visibility.",
+        );
+      }
     }
 
     const uploadInput = await findFirstLocator(page, [
@@ -1000,6 +1008,7 @@ async function run(options) {
       [
         'button:has-text("确认创建并部署")',
         'button:has-text("创建并部署")',
+        'button:has-text("创建创空间")',
         'button:has-text("Create")',
       ],
       "final submit button",
