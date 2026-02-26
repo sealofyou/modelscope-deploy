@@ -822,8 +822,9 @@ async function run(options) {
     );
   }
 
+  let page;
   try {
-    const page = context.pages()[0] ?? (await context.newPage());
+    page = context.pages()[0] ?? (await context.newPage());
     page.setDefaultTimeout(options.timeoutMs);
 
     await page.goto(options.createUrl, { waitUntil: "domcontentloaded" });
