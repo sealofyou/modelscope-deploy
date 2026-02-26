@@ -422,10 +422,11 @@ async function saveDebugArtifacts(page, options, stage) {
   }
 }
 
-async function waitForCreateFormReady(page, timeoutMs) {
-  const deadline = Date.now() + timeoutMs;
+async function waitForCreateFormReady(page, options) {
+  const deadline = Date.now() + options.timeoutMs;
   let lastState = "unknown";
   let lastUrl = page.url();
+  let loginHandled = false;
 
   while (Date.now() < deadline) {
     const signals = await collectPageSignals(page);
@@ -438,6 +439,15 @@ async function waitForCreateFormReady(page, timeoutMs) {
     }
 
     if (inferred.state === "login_required") {
+      if (options.interactive && !loginHandled) {
+        loginHandled = true;
+        await promptEnter(
+          `Detected login-required state at ${signals.url}. Please login in the opened browser, then continue.`,
+          options.promptTimeoutMs,
+        );
+        await page.goto(options.createUrl, { waitUntil: "domcontentloaded" });
+        continue;
+      }
       throw new Error(
         `Login required before auto submit. Please login at ${signals.url} and retry.`,
       );
@@ -447,7 +457,7 @@ async function waitForCreateFormReady(page, timeoutMs) {
   }
 
   throw new Error(
-    `Create form not ready within ${timeoutMs} ms. Last state=${lastState}, url=${lastUrl}`,
+    `Create form not ready within ${options.timeoutMs} ms. Last state=${lastState}, url=${lastUrl}`,
   );
 }
 
@@ -835,7 +845,7 @@ async function run(options) {
     page.setDefaultTimeout(options.timeoutMs);
 
     await page.goto(options.createUrl, { waitUntil: "domcontentloaded" });
-    await waitForCreateFormReady(page, options.timeoutMs);
+    await waitForCreateFormReady(page, options);
     if (options.interactive) {
       await promptEnter(
         "Please confirm you are logged in to ModelScope and the create form is visible.",
