@@ -57,6 +57,8 @@ const LOGIN_INDICATOR_PATTERN =
   /(登录|请先登录|sign in|log in|手机号|验证码|password|账号登录|oauth)/i;
 const CREATE_FORM_INDICATOR_PATTERN =
   /(空间英文名称|英文名称|English Name|Studio English|空间中文名称|中文名称|创建并部署|确认创建并部署)/i;
+const HOME_PAGE_INDICATOR_PATTERN =
+  /(模型库|数据集|创空间|文档|社区动向|登录\s*\/\s*注册|加入社区)/i;
 const LOGIN_PATH_PATTERN = /(\/login|\/signin|auth\/login)/i;
 const CREATE_PATH_PATTERN = /(\/studios\/create)/i;
 
@@ -101,16 +103,21 @@ export function inferCreatePageState(snapshot) {
     return { state: "login_required", reasons };
   }
 
-  const createHints = [
-    CREATE_PATH_PATTERN.test(url),
-    CREATE_FORM_INDICATOR_PATTERN.test(source),
-    snapshot?.hasEnglishInput === true,
-    snapshot?.hasChineseInput === true,
-    snapshot?.hasDescriptionInput === true,
-  ];
-  if (createHints.some(Boolean)) {
+  const hasFormInputs =
+    snapshot?.hasEnglishInput === true ||
+    snapshot?.hasChineseInput === true ||
+    snapshot?.hasDescriptionInput === true;
+  const hasCreateTexts = CREATE_FORM_INDICATOR_PATTERN.test(source);
+  const looksLikeHomePage = HOME_PAGE_INDICATOR_PATTERN.test(source);
+
+  if (hasFormInputs || hasCreateTexts) {
     reasons.push("create-form-indicator");
     return { state: "create_form_ready", reasons };
+  }
+
+  if (CREATE_PATH_PATTERN.test(url) && looksLikeHomePage) {
+    reasons.push("create-url-but-home-page");
+    return { state: "login_required", reasons };
   }
 
   return { state: "unknown", reasons };

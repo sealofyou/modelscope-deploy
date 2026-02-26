@@ -159,3 +159,15 @@ test("inferCreatePageState identifies create form by common labels", () => {
 
   assert.equal(state.state, "create_form_ready");
 });
+
+test("inferCreatePageState treats create-url homepage fallback as login required", () => {
+  const state = inferCreatePageState({
+    url: "https://modelscope.cn/studios/create?template=quick",
+    bodyText: "模型库 数据集 创空间 文档 登录 / 注册",
+    hasEnglishInput: false,
+    hasChineseInput: false,
+    hasDescriptionInput: false,
+  });
+
+  assert.equal(state.state, "login_required");
+});
