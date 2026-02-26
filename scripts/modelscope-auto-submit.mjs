@@ -52,7 +52,7 @@ const KNOWN_ISSUES = {
 const ERROR_LINE_PATTERN =
   /(\b(error|failed|failure|exception|traceback)\b|not found|GL_HOOK_ERR|EACCES|ENOENT|denied|invalid)/i;
 const SUCCESS_PATTERN =
-  /(deploy(ment)?\s+success|部署成功|service\s+running|服务运行中|started\s+successfully|启动成功)/i;
+  /(deploy(ment)?\s+success|部署成功|service\s+running|服务运行中|运行中|started\s+successfully|启动成功)/i;
 const LOGIN_INDICATOR_PATTERN =
   /(登录|请先登录|sign in|log in|手机号|验证码|password|账号登录|oauth)/i;
 const CREATE_FORM_INDICATOR_PATTERN =
